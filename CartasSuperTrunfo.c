@@ -82,12 +82,14 @@ int main() {
   printf("######### 'CIDADE 1' ########\n");
   printf("########################################\n");
 
-  printf("# CODIGO - ", codCidade1);
-  printf("# NOME - ", nome1);
-  printf("# POPULACAO - %d", populacao1);
-  printf("# AREA - %.2f", area1);
-  printf("# PIB - %.2f", pib1);
-  printf("# PONTOS TURISTICOS - %d", numPontosTuristicos1);
+  printf("# CODIGO - %s \n", codCidade1);
+  printf("# NOME - %s \n", nome1);
+  printf("# POPULACAO - %d \n", populacao1);
+  printf("# DENSIDADE POPULACIONAL - %.2f \n", (float)populacao1 / area1);
+  printf("# AREA - %.2f \n", area1);
+  printf("# PIB - %.2f \n", pib1);
+  printf("# PIB PER CAPITA- %.2f \n", pib1 / populacao1);
+  printf("# PONTOS TURISTICOS - %d \n", numPontosTuristicos1);
   printf("########################################\n");
   printf("########################################\n\n\n");
 
@@ -96,12 +98,14 @@ int main() {
   printf("######### 'CIDADE 2' ########\n");
   printf("########################################\n");
 
-  printf("# CODIGO - ", codCidade2);
-  printf("# NOME - ", nome2);
-  printf("# POPULACAO - %d", populacao2);
-  printf("# AREA - %.2f", area2);
-  printf("# PIB - %.2f", pib2);
-  printf("# PONTOS TURISTICOS - %d", numPontosTuristicos2);
+  printf("# CODIGO - %s \n", codCidade2);
+  printf("# NOME - %s \n", nome2);
+  printf("# POPULACAO - %d \n", populacao2);
+  printf("# DENSIDADE POPULACIONAL - %.2f \n", (float)populacao2 / area2);
+  printf("# AREA - %.2f \n", area2);
+  printf("# PIB - %.2f \n", pib2);
+  printf("# PIB PER CAPITA- %.2f \n", pib2 / populacao2);
+  printf("# PONTOS TURISTICOS - %d \n", numPontosTuristicos2);
   printf("########################################\n");
   printf("########################################\n");
 
