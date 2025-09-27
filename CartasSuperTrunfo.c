@@ -5,16 +5,15 @@
 typedef struct {
   char codCidade[4];
   char nome[20];
-  int populacao;
+  int  populacao;
   float area;
   float pib;
-  int numPontosTuristicos;
+  int  numPontosTuristicos;
   float densidadeDemografica;
   float pibPerCapita;
 } Card;
 
-
-// Função para ler uma carta
+// ---------- Leitura da carta ----------
 void lerCarta(Card *c)
 {
   printf("## INSIRA OS DADOS DA CARTA:\n");
@@ -39,20 +38,20 @@ void lerCarta(Card *c)
 
   // ---- Calculados  ----
   c->densidadeDemografica = (c->area > 0.0f) ? (c->populacao / c->area) : 0.0f;
-  c->pibPerCapita          = (c->populacao > 0) ? (c->pib / c->populacao) : 0.0f;
+  c->pibPerCapita         = (c->populacao > 0) ? (c->pib / c->populacao) : 0.0f;
 
   printf("\n");
 }
 
-// Menu de atributo
+// ---------- Menu / leitura de opções ----------
 void mostraAtributos()
 {
-    printf("\nEscolha um atributo para comparação:\n");
-    printf("1 - População\n");
-    printf("2 - Área\n");
-    printf("3 - PIB\n");
-    printf("4 - Densidade Demográfica\n");
-    printf("5 - Pontos Turísticos\n");
+  printf("\nEscolha um atributo para comparação:\n");
+  printf("1 - População\n");
+  printf("2 - Área\n");
+  printf("3 - PIB\n");
+  printf("4 - Densidade Demográfica\n");
+  printf("5 - Pontos Turísticos\n");
 }
 
 // Lê uma opção válida [1..5] e (se for o segundo atributo) impede repetir a primeira
@@ -82,6 +81,7 @@ int lerOpcaoAtributo(const char *prompt, int proibido)
   return opcao;
 }
 
+// ---------- Atributos: nome e valor ----------
 float obterValorAtributo(const Card *c, int atributo)
 {
   switch (atributo) {
@@ -94,7 +94,6 @@ float obterValorAtributo(const Card *c, int atributo)
   }
 }
 
-// Converte código do atributo em nome (só para exibir bonito)
 const char* nomeAtributo(int atributo)
 {
   switch (atributo) {
@@ -107,10 +106,32 @@ const char* nomeAtributo(int atributo)
   }
 }
 
+// ---------- Regra de comparação ----------
+// Densidade (4) -> menor vence; demais -> maior vence
+int atributoMenorVence(int atributo) {
+  return (atributo == 4);
+}
+
+// Retorna 1 se vence a Carta 1, 2 se vence a Carta 2, 0 se empate
+int vencedorDoAtributo(float v1, float v2, int atributo) {
+  if (atributoMenorVence(atributo)) {
+    if (v1 < v2) return 1;
+    if (v2 < v1) return 2;
+    return 0;
+  } else {
+    if (v1 > v2) return 1;
+    if (v2 > v1) return 2;
+    return 0;
+  }
+}
+
+const char* regraLabel(int atributo) {
+  return atributoMenorVence(atributo) ? "menor vence" : "maior vence";
+}
+
+// ---------- Jogo ----------
 void jogarRodada(Card card1, Card card2)
 {
-  int attribute1, attribute2;
-
   int atributo1 = lerOpcaoAtributo("\nEscolha o primeiro atributo (1-5): ", 0);
   int atributo2 = lerOpcaoAtributo("\nEscolha o segundo atributo (1-5, diferente do primeiro): ", atributo1);
 
@@ -122,34 +143,28 @@ void jogarRodada(Card card1, Card card2)
   int pontos1 = 0, pontos2 = 0;
 
   printf("\n===== COMPARAÇÃO =====\n");
-  printf(
-    "%s -> Carta1: %.2f | Carta2: %.2f => %s\n",
-    nomeAtributo(atributo1), 
-    a1_c1, // atributi 1 da carta 1
-    a1_c2, // atributo 1 da carta 2
-    (a1_c1 > a1_c2) ? "Carta1 vence" : (a1_c2 > a1_c1) ? "Carta2 vence" : "Empate"
-  );
 
-  if (a1_c1 > a1_c2) {
-    pontos1++;
-  }  else if (a1_c2 > a1_c1) {
-    pontos2++;
-  }
+  // Atributo 1
+  int res1 = vencedorDoAtributo(a1_c1, a1_c2, atributo1);
+  if (res1 == 1) pontos1++;
+  else if (res1 == 2) pontos2++;
 
-  printf(
-    "%s -> Carta1: %.2f | Carta2: %.2f => %s\n",
-    nomeAtributo(atributo2),
-    a2_c1, // atributo 2 da carta 1
-    a2_c2, // atributo 2 da carta 2
-    (a2_c1 > a2_c2) ? "Carta1 vence" : (a2_c2 > a2_c1) ? "Carta2 vence" : "Empate"
-  );
+  printf("%s (%s) -> Carta1: %.2f | Carta2: %.2f => %s\n",
+         nomeAtributo(atributo1), regraLabel(atributo1),
+         a1_c1, a1_c2,
+         res1 == 1 ? "Carta 1 vence" : res1 == 2 ? "Carta 2 vence" : "Empate");
 
-  if (a2_c1 > a2_c2) {
-    pontos1++;
-  } else if (a2_c2 > a2_c1) {
-    pontos2++;
-  }
+  // Atributo 2
+  int res2 = vencedorDoAtributo(a2_c1, a2_c2, atributo2);
+  if (res2 == 1) pontos1++;
+  else if (res2 == 2) pontos2++;
 
+  printf("%s (%s) -> Carta1: %.2f | Carta2: %.2f => %s\n",
+         nomeAtributo(atributo2), regraLabel(atributo2),
+         a2_c1, a2_c2,
+         res2 == 1 ? "Carta 1 vence" : res2 == 2 ? "Carta 2 vence" : "Empate");
+
+  // Resultado final
   printf("\n===== RESULTADO FINAL =====\n");
   if (pontos1 > pontos2) {
     printf("Vencedor: CARTA 1 (%d x %d)\n", pontos1, pontos2);
@@ -157,15 +172,12 @@ void jogarRodada(Card card1, Card card2)
     printf("Vencedor: CARTA 2 (%d x %d)\n", pontos2, pontos1);
   } else {
     printf("Empate geral (%d x %d)\n", pontos1, pontos2);
-  }                        
-
-  return;  
+  }
 }
 
-
-int main() {
+int main(void) {
   Card carta1, carta2;
-  
+
   // Área para entrada de dados
   printf("######################################################\n");
   printf("##### Cadastro de cartas - SUPER TRUNFO CIDADES ######\n");
@@ -175,6 +187,6 @@ int main() {
   lerCarta(&carta2);
 
   jogarRodada(carta1, carta2);
-  
+
   return 0;
-} 
+}
